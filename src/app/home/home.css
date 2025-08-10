@@ -1,0 +1,138 @@
+/* Minimal styling for Material UI look */
+.mat-sidenav-container {
+  height: 100vh;
+}
+.mat-toolbar {
+  background: #1976d2;
+  color: white;
+}
+.mat-sidenav {
+  width: 220px;
+}
+.mat-list-item.active {
+  background: #e3f2fd;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full screen height */
+}
+
+/* Header */
+.app-header {
+  font-size: 18px;
+  font-weight: 500;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1002;
+}
+
+/* Main container */
+.mat-sidenav-container {
+  flex: 1;
+  margin-top: 56px; /* height of toolbar */
+}
+
+/* Sidenav */
+.app-sidenav {
+  width: 240px;
+  background: #f9f9f9;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+}
+
+/* Menu styling */
+.mat-list-item {
+  border-radius: 4px;
+  margin: 2px 8px;
+  transition: background 0.2s;
+  color: #333;
+}
+.mat-list-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+a.active {
+  background: rgba(25, 118, 210, 0.15) !important;
+  font-weight: 500;
+  color: #1976d2;
+}
+
+.menu-panel {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+  margin: 2px 8px;
+}
+
+/* Submenu header for Billing */
+.submenu-header {
+  font-weight: 500;
+  font-size: 14px;
+  margin: 8px 16px 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+}
+.submenu-header mat-icon {
+  font-size: 18px;
+}
+
+/* Main content */
+.main-content {
+  padding: 16px;
+}
+
+/* Footer - no fixed positioning */
+.app-footer {
+  background: #f1f1f1;
+  color: #555;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  border-top: 1px solid #ddd;
+  margin-top: auto; /* push footer down when content is short */
+}
+
+/* Mobile tweaks */
+.menu-toggle {
+  display: none;
+}
+@media (max-width: 900px) {
+  .app-sidenav {
+    width: 200px !important;
+    min-width: 160px !important;
+    max-width: 80vw !important;
+  }
+  .main-content {
+    padding: 8px;
+  }
+  .menu-toggle {
+    display: block;
+    margin-bottom: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .app-header {
+    font-size: 16px;
+    padding: 8px;
+  }
+  .app-sidenav {
+    width: 100vw !important;
+    position: fixed !important;
+    top: 56px;
+    bottom: 0;
+    height: calc(100vh - 56px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  .main-content {
+    padding: 4px;
+  }
+  .app-footer {
+    font-size: 12px;
+    padding: 6px;
+  }
+}

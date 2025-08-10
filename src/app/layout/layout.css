@@ -1,0 +1,14 @@
+/* Minimal styling for Material UI look */
+.mat-sidenav-container {
+  height: 100vh;
+}
+.mat-toolbar {
+  background: #1976d2;
+  color: white;
+}
+.mat-sidenav {
+  width: 220px;
+}
+.mat-list-item.active {
+  background: #e3f2fd;
+}
