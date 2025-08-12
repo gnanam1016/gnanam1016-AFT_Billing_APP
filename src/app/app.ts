@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, OnDestroy, signal, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,7 @@ import { LoginComponent } from './login/login';
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
-  imports:[LoginComponent],
+  imports:[LoginComponent,RouterModule],
   styleUrl: './app.css'
 })
 export class App  {

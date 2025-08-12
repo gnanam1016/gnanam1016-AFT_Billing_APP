@@ -21,25 +21,27 @@ export class LoginComponent implements OnInit {
     constructor(private router: Router, private loginService: Loginservice) {    }
    
     ngOnInit(): void {
-        debugger;
-        if (this.loginService.getLoginStatus()) {
-            this.loginUser();
-        }
+        // debugger;
+        // if (this.loginService.getLoginStatus()) {
+        //     this.loginUser();
+        // }
     }
 
     loginUser() {
-        this.showLoginForm = false;
-        this.showApp = true;
-        this.showCompanyRegisterForm = false;
-        this.loginService.setLoginStatus(true);
-        // this.router.navigate(['/home']);
+        // this.showLoginForm = false;
+        // this.showApp = true;
+        // this.showCompanyRegisterForm = false;
+        // this.loginService.setLoginStatus(true);
+        this.router.navigate(['/home']);
     }
 
     public registerCompany() {
-        alert('Register Company clicked');
-        debugger;
-        this.showLoginForm = false;
-        this.showCompanyRegisterForm = true;
+        // alert('Register Company clicked');
+        // debugger;
+        // this.showLoginForm = false;
+        // this.showCompanyRegisterForm = true;
+        this.router.navigate(['/registercompany']);
+
     }
 
 }

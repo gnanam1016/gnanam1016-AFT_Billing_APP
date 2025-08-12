@@ -1,15 +1,62 @@
 import { Routes } from '@angular/router';
-import { Registercompany } from './registercompany/registercompany';
-import { LoginComponent } from './login/login';
-import { Home } from './home/home';
-import { Quickbill } from './quickbill/quickbill';
-import { Newbill } from './newbill/newbill';
+import { PublicLayout } from './public-layout/public-layout';
+import { authgardGuard } from './auth/authgard-guard';
 
 export const routes: Routes = [
-    // { path: '', component: LoginComponent },
-    // { path: 'login', component: LoginComponent },
-    { path: 'registercompany', component: Registercompany },
-    {path:'home',component:Home},
-    {path:'quickbill',component:Quickbill},
-    {path:"newbill",component:Newbill}
+  // Public routes
+  {
+    path: '',
+    component: PublicLayout,
+    children: [
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./login/login').then(m => m.LoginComponent)
+      },
+      {
+        path: 'registercompany',
+        loadComponent: () =>
+          import('./registercompany/registercompany').then(m => m.Registercompany)
+      }
+    ]
+  },
+
+  // Private routes (after login)
+  {
+    path: 'home',
+    loadComponent: () => import('./home/home').then(m => m.Home),
+    canActivate: [authgardGuard],
+    children: [
+      { path: '', redirectTo: 'quickbill', pathMatch: 'full' },
+      {
+        path: 'quickbill',
+        loadComponent: () =>
+          import('./quickbill/quickbill').then(m => m.Quickbill)
+      },
+      {
+        path: 'newbill',
+        loadComponent: () =>
+          import('./newbill/newbill').then(m => m.Newbill)
+      },
+      {
+        path: 'itemmaster',
+        loadComponent: () =>
+          import('./itemmaster/itemmaster').then(m => m.Itemmaster)
+      }
+    //   {
+    //     path: 'batchnumber',
+    //     loadComponent: () =>
+    //       import('./batchnumber/batchnumber').then(m => m.Batchnumber)
+    //   },
+    //   {
+    //     path: 'company/list',
+    //     loadComponent: () =>
+    //       import('./company/company-list').then(m => m.CompanyList)
+    //   }
+    ]
+  },
+
+  // Fallback
+  { path: '**', redirectTo: 'login' }
 ];
