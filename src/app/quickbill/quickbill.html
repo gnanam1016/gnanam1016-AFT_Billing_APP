@@ -1,1 +1,113 @@
-<p>quickbill works!</p>
+<mat-accordion>
+	<!-- Add Form -->
+		<mat-expansion-panel [expanded]="true">
+		<mat-expansion-panel-header>
+			<mat-panel-title>Add Customer</mat-panel-title>
+		</mat-expansion-panel-header>
+			<form class="customer-form">
+				<mat-form-field appearance="outline" class="form-field">
+					<mat-label>Customer Name</mat-label>
+					<input matInput [(ngModel)]="customerForm.name" name="name" required>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="form-field">
+					<mat-label>Mobile Number</mat-label>
+					<input matInput [(ngModel)]="customerForm.mobile" name="mobile" required>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="form-field">
+					<mat-label>Address</mat-label>
+					<input matInput [(ngModel)]="customerForm.address" name="address" required>
+				</mat-form-field>
+			</form>
+	</mat-expansion-panel>
+
+	<!-- Listing Table -->
+		<mat-expansion-panel [expanded]="true">
+		<mat-expansion-panel-header>
+			<mat-panel-title>Item List</mat-panel-title>
+		</mat-expansion-panel-header>
+		<div class="table-container">
+					<mat-form-field appearance="outline" class="filter-field">
+						<mat-label>Filter</mat-label>
+						<input matInput (keyup)="applyFilter($event)" placeholder="Search items">
+					</mat-form-field>
+					<!-- Item Add/Edit Form -->
+					<form (ngSubmit)="addItem()" class="customer-form">
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Item Name</mat-label>
+							<input matInput [(ngModel)]="itemForm.itemName" name="itemName" required>
+						</mat-form-field>
+						<mat-form-field appearance="outline" class="form-field">
+							<mat-label>Batch Number</mat-label>
+							<input matInput [(ngModel)]="itemForm.batchNumber" name="batchNumber" required>
+						</mat-form-field>
+									<mat-form-field appearance="outline" class="form-field">
+										<mat-label>Quantity</mat-label>
+										<input matInput type="number" [(ngModel)]="itemForm.quantity" name="quantity" required (ngModelChange)="calculateTotal()">
+									</mat-form-field>
+									<mat-form-field appearance="outline" class="form-field">
+										<mat-label>Per Quantity Price</mat-label>
+										<input matInput type="number" [(ngModel)]="itemForm.perQuantityPrice" name="perQuantityPrice" required (ngModelChange)="calculateTotal()">
+									</mat-form-field>
+									<mat-form-field appearance="outline" class="form-field">
+										<mat-label>Discount</mat-label>
+										<input matInput type="number" [(ngModel)]="itemForm.discount" name="discount" (ngModelChange)="calculateTotal()">
+									</mat-form-field>
+									<mat-form-field appearance="outline" class="form-field">
+										<mat-label>Total Amount</mat-label>
+										<input matInput type="number" [(ngModel)]="itemForm.totalAmount" name="totalAmount" required readonly>
+									</mat-form-field>
+						<button mat-raised-button color="primary" type="submit">
+							{{ editIndex !== null ? 'Update' : 'Add' }}
+						</button>
+					</form>
+					<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+						<!-- Item Name Column -->
+						<ng-container matColumnDef="itemName">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Item Name</th>
+							<td mat-cell *matCellDef="let element">{{element.itemName}}</td>
+						</ng-container>
+						<!-- Batch Number Column -->
+						<ng-container matColumnDef="batchNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Batch Number</th>
+							<td mat-cell *matCellDef="let element">{{element.batchNumber}}</td>
+						</ng-container>
+								<!-- Quantity Column -->
+								<ng-container matColumnDef="quantity">
+									<th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+									<td mat-cell *matCellDef="let element">{{element.quantity}}</td>
+								</ng-container>
+								<!-- Per Quantity Price Column -->
+								<ng-container matColumnDef="perQuantityPrice">
+									<th mat-header-cell *matHeaderCellDef mat-sort-header>Per Quantity Price</th>
+									<td mat-cell *matCellDef="let element">{{element.perQuantityPrice}}</td>
+								</ng-container>
+						<!-- Discount Column -->
+						<ng-container matColumnDef="discount">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
+							<td mat-cell *matCellDef="let element">{{element.discount}}</td>
+						</ng-container>
+						<!-- Total Amount Column -->
+						<ng-container matColumnDef="totalAmount">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Total Amount</th>
+							<td mat-cell *matCellDef="let element">{{element.totalAmount}}</td>
+						</ng-container>
+						<!-- Actions Column -->
+						<ng-container matColumnDef="actions">
+							<th mat-header-cell *matHeaderCellDef>Actions</th>
+							<td mat-cell *matCellDef="let element; let i = index">
+								<button mat-icon-button color="accent" (click)="editItem(i)">
+									<mat-icon>edit</mat-icon>
+								</button>
+								<button mat-icon-button color="warn" (click)="deleteItem(i)">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+			<mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+		</div>
+	</mat-expansion-panel>
+</mat-accordion>

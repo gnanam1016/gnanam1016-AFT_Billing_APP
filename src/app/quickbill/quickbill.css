@@ -1,0 +1,19 @@
+.customer-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.table-container {
+  overflow: auto;
+}
+
+.filter-field {
+  width: 100%;
+  margin-bottom: 10px;
+}
