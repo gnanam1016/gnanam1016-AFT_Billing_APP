@@ -33,40 +33,50 @@
           </mat-expansion-panel-header>
 
           <mat-nav-list>
-            <div class="submenu-header">
-              <mat-icon>description</mat-icon>
-              <span>Invoices</span>
-            </div>
-            <a mat-list-item routerLink="/billing/invoices/list" routerLinkActive="active">
-              List of Invoices
+            <a mat-list-item routerLink="/billing/quickbill" routerLinkActive="active">
+              Quick Bill
             </a>
-            <a mat-list-item routerLink="/billing/invoices/search" routerLinkActive="active">
-              Search Invoice
-            </a>
-
-            <a mat-list-item routerLink="/billing/payments" routerLinkActive="active">
-              Payments
+            <a mat-list-item routerLink="/billing/newbill" routerLinkActive="active">
+              New Bill
             </a>
           </mat-nav-list>
         </mat-expansion-panel>
 
-        <!-- Company menu -->
-        <mat-expansion-panel class="menu-panel">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <mat-icon>business</mat-icon>
-              Company
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list>
-            <a mat-list-item routerLink="/registercompany" routerLinkActive="active">
-              Register Company
-            </a>
-            <a mat-list-item routerLink="/company/list" routerLinkActive="active">
-              Company List
-            </a>
-          </mat-nav-list>
-        </mat-expansion-panel>
+          <!-- Master menu -->
+          <mat-expansion-panel class="menu-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>settings</mat-icon>
+                Master
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+              <a mat-list-item routerLink="/itemmaster" routerLinkActive="active">
+                Item Master
+              </a>
+              <a mat-list-item routerLink="/batchnumber" routerLinkActive="active">
+                Batch Number
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
+
+          <!-- Company menu -->
+          <mat-expansion-panel class="menu-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>business</mat-icon>
+                Company
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+              <a mat-list-item routerLink="/registercompany" routerLinkActive="active">
+                Register Company
+              </a>
+              <a mat-list-item routerLink="/company/list" routerLinkActive="active">
+                Company List
+              </a>
+            </mat-nav-list>
+          </mat-expansion-panel>
       </mat-nav-list>
     </mat-sidenav>
 

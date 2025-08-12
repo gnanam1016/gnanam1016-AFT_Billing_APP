@@ -5,14 +5,14 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class Loginservice {
-  private loggedInSubject = new BehaviorSubject<boolean>(false);
-  loggedIn$ = this.loggedInSubject.asObservable();
+  // private loggedInSubject = new BehaviorSubject<boolean>(false);
+  // loggedIn$ = this.loggedInSubject.asObservable();
 
-  getLoginStatus(): boolean {
-    return this.loggedInSubject.value;
-  }
+  // getLoginStatus(): boolean {
+  //   return this.loggedInSubject.value;
+  // }
   
-  setLoginStatus(status: boolean) {
-    this.loggedInSubject.next(status);
-  }
+  // setLoginStatus(status: boolean) {
+  //   this.loggedInSubject.next(status);
+  // }
 }

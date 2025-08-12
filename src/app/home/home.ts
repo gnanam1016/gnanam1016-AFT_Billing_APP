@@ -19,7 +19,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class Home implements OnInit, OnDestroy {
   protected readonly title = signal('AFT_Billing_App');
-  public isLoggedIn = false;
   public isMobile = false;
   public sidenavOpened = false;
 
@@ -28,10 +27,6 @@ export class Home implements OnInit, OnDestroy {
   ngOnInit() {
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize.bind(this));
-    this.loginService.loggedIn$.subscribe(status => {
-      this.isLoggedIn = status;
-      this.cdr.detectChanges();
-    });
   }
 
   ngOnDestroy() {
