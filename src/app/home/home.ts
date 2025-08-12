@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Loginservice } from '../login/loginservice/loginservice';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIcon } from '@angular/material/icon';
@@ -11,8 +11,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterOutlet,CommonModule, MatSidenavModule, MatIcon, 
-    MatExpansionModule, MatToolbarModule, MatButtonModule, MatListModule],
+  imports: [RouterOutlet,CommonModule, MatSidenavModule, MatIcon, CommonModule,
+    MatExpansionModule, MatToolbarModule, MatButtonModule, MatListModule,RouterModule],
 
   templateUrl: './home.html',
   styleUrl: './home.css'
