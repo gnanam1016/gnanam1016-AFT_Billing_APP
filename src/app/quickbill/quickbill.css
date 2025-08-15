@@ -1,19 +1,28 @@
-.customer-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+.item-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
 }
 
-.form-field {
-  flex: 1;
-  min-width: 200px;
+.form-actions {
+  display: flex;
+  align-items: center;
 }
 
 .table-container {
-  overflow: auto;
+  margin-top: 10px;
 }
 
-.filter-field {
+.full-width-table {
   width: 100%;
-  margin-bottom: 10px;
+}
+
+.totals-section {
+  margin-top: 20px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
 }

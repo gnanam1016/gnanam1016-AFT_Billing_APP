@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 // Material modules
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -113,5 +113,116 @@ export class Quickbill implements AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  // ✅ Totals
+  getTotalQuantity() {
+    return this.dataSource.data.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  }
+
+  getTotalDiscount() {
+    return this.dataSource.data.reduce((sum, item) => sum + (item.discount || 0), 0);
+  }
+
+  getTotalAmount() {
+    return this.dataSource.data.reduce((sum, item) => sum + (item.totalAmount || 0), 0);
+  }
+
+  // ✅ Save Bill
+  saveBill() {
+    const billData = {
+      customer: this.customerForm,
+      items: this.dataSource.data,
+      totals: {
+        quantity: this.getTotalQuantity(),
+        discount: this.getTotalDiscount(),
+        amount: this.getTotalAmount()
+      }
+    };
+    console.log('Bill saved:', billData);
+    alert('Bill saved successfully!');
+  }
+
+printInvoice() {
+  let billContent = `
+    <div style="font-family: monospace; font-size: 14px; padding: 10px; width: 250px;">
+      <h3 style="text-align: center; margin: 0;">POS BILL</h3>
+      <hr style="margin: 4px 0;">
+      <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+        <thead>
+          <tr>
+            <th style="text-align: left; width: 40%;">Item</th>
+            <th style="text-align: right; width: 15%;">Qty</th>
+            <th style="text-align: right; width: 20%;">Price</th>
+            <th style="text-align: right; width: 25%;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.dataSource.data.map(item => `
+            <tr>
+              <td style="word-wrap: break-word;">${item.itemName}</td>
+              <td style="text-align: right;">${item.quantity}</td>
+              <td style="text-align: right;">${item.perQuantityPrice.toFixed(2)}</td>
+              <td style="text-align: right;">${item.totalAmount.toFixed(2)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <hr style="margin: 4px 0;">
+      <table style="width: 100%; font-weight: bold; table-layout: fixed;">
+        <tr>
+          <td style="text-align: left;">Total Qty</td>
+          <td style="text-align: right;">${this.getTotalQuantity()}</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">Total Discount</td>
+          <td style="text-align: right;">${this.getTotalDiscount().toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">Total Amount</td>
+          <td style="text-align: right;">${this.getTotalAmount().toFixed(2)}</td>
+        </tr>
+      </table>
+      <hr style="margin: 4px 0;">
+      <p style="text-align: center; margin: 0;">Thank you! Visit Again</p>
+    </div>
+  `;
+
+  let printWindow = window.open('', '', 'width=300,height=600');
+  if (printWindow) {
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>POS Bill</title>
+        </head>
+        <body onload="window.print(); window.close();">
+          ${billContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+}
+
+
+  // ✅ Print POS bill (compact)
+  printPOSBill() {
+    let printContents = `
+      <h3 style="text-align:center;">POS Receipt</h3>
+      <hr>
+    `;
+    this.dataSource.data.forEach(item => {
+      printContents += `
+        ${item.itemName} (${item.quantity} x ${item.perQuantityPrice}) = ${item.totalAmount}<br/>
+      `;
+    });
+    printContents += `
+      <hr>
+      <strong>Total: ${this.getTotalAmount()}</strong>
+    `;
+    const popupWin = window.open('', '_blank', 'width=300,height=600');
+    popupWin!.document.open();
+    popupWin!.document.write(`<html><body onload="window.print()">${printContents}</body></html>`);
+    popupWin!.document.close();
   }
 }
