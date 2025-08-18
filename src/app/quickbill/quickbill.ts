@@ -70,8 +70,8 @@ export class Quickbill implements AfterViewInit,OnInit {
   private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
-     this.billingService.getBills();
-     
+    //  this.billingService.getBills();
+   this.refreshBills();  
   if (this.savedBills.length > 0) {
     // Extract last bill number and set counter
     const lastBill = this.savedBills[this.savedBills.length - 1];
