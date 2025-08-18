@@ -1,107 +1,136 @@
-<div class="billing-container">
+<div class="container">
 
-  <!-- Add Item Panel -->
-  <mat-accordion>
-    <mat-expansion-panel expanded>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Add Item
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+  <!-- 🧾 Customer Details Section -->
+  <mat-card>
+    <mat-accordion multi>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Customer Details</mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <form [formGroup]="itemForm" (ngSubmit)="addItem()">
+        <div class="item-form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="customerForm.name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mobile</mat-label>
+            <input matInput [(ngModel)]="customerForm.mobile" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <textarea matInput rows="2" [(ngModel)]="customerForm.address"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+
+  <br />
+
+  <!-- 🛒 Add Item Section -->
+  <mat-card>
+    <mat-accordion multi>
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Add Item</mat-panel-title>
+        </mat-expansion-panel-header>
+
         <div class="item-form-grid">
           <mat-form-field appearance="outline">
             <mat-label>Item Name</mat-label>
-            <input matInput formControlName="itemName" required>
+            <input matInput [(ngModel)]="itemForm.itemName" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Batch Number</mat-label>
-            <input matInput formControlName="batchNumber">
+            <input matInput [(ngModel)]="itemForm.batchNumber" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Quantity</mat-label>
-            <input matInput type="number" formControlName="quantity" (input)="calculateTotal()" required>
+            <input matInput type="number" [(ngModel)]="itemForm.quantity" (input)="calculateTotal()" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Price per Quantity</mat-label>
-            <input matInput type="number" formControlName="perQuantityPrice" (input)="calculateTotal()" required>
+            <mat-label>Price</mat-label>
+            <input matInput type="number" [(ngModel)]="itemForm.perQuantityPrice" (input)="calculateTotal()" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Discount</mat-label>
-            <input matInput type="number" formControlName="discount" (input)="calculateTotal()">
+            <input matInput type="number" [(ngModel)]="itemForm.discount" (input)="calculateTotal()" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Total Amount</mat-label>
-            <input matInput formControlName="totalAmount" readonly>
+            <mat-label>Total</mat-label>
+            <input matInput type="number" [(ngModel)]="itemForm.totalAmount" readonly />
           </mat-form-field>
-
-          <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit">
-              {{ editIndex !== null ? 'Update' : 'Add' }}
-            </button>
-          </div>
         </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
 
-  <!-- Filter -->
-  <div style="margin: 15px 0;">
-    <mat-form-field appearance="outline" style="width: 100%;">
-      <mat-label>Filter Items</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search by item name">
+        <div class="form-actions">
+          <button mat-raised-button color="primary" (click)="addItem()">
+            {{ editIndex !== null ? 'Update Item' : 'Add Item' }}
+          </button>
+          <button mat-raised-button color="accent" (click)="saveBill()">Save Bill</button>
+          <button mat-raised-button color="warn" (click)="printInvoice()">Print Invoice</button>
+          <button mat-raised-button color="accent" (click)="sendWhatsApp()">
+            <mat-icon>send</mat-icon> Send via WhatsApp
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+
+  <br />
+
+  <!-- 📋 Item List Table -->
+  <mat-card class="table-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Search Items</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search..." />
     </mat-form-field>
-  </div>
 
-  <!-- Items Table -->
-  <div class="table-container mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" class="full-width-table">
+    <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
 
-      <!-- Item Name Column -->
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+        </ng-container>
       <ng-container matColumnDef="itemName">
-        <th mat-header-cell *matHeaderCellDef> Item Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.itemName}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Item</th>
+        <td mat-cell *matCellDef="let element">{{ element.itemName }}</td>
       </ng-container>
 
-      <!-- Batch Number -->
       <ng-container matColumnDef="batchNumber">
-        <th mat-header-cell *matHeaderCellDef> Batch # </th>
-        <td mat-cell *matCellDef="let element"> {{element.batchNumber}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Batch</th>
+        <td mat-cell *matCellDef="let element">{{ element.batchNumber }}</td>
       </ng-container>
 
-      <!-- Quantity -->
       <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef> Qty </th>
-        <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
+        <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
       </ng-container>
 
-      <!-- Price -->
       <ng-container matColumnDef="perQuantityPrice">
-        <th mat-header-cell *matHeaderCellDef> Price </th>
-        <td mat-cell *matCellDef="let element"> {{element.perQuantityPrice | currency:'INR'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+        <td mat-cell *matCellDef="let element">{{ element.perQuantityPrice }}</td>
       </ng-container>
 
-      <!-- Discount -->
       <ng-container matColumnDef="discount">
-        <th mat-header-cell *matHeaderCellDef> Discount </th>
-        <td mat-cell *matCellDef="let element"> {{element.discount | currency:'INR'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
+        <td mat-cell *matCellDef="let element">{{ element.discount }}</td>
       </ng-container>
 
-      <!-- Total Amount -->
       <ng-container matColumnDef="totalAmount">
-        <th mat-header-cell *matHeaderCellDef> Total </th>
-        <td mat-cell *matCellDef="let element"> {{element.totalAmount | currency:'INR'}} </td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+        <td mat-cell *matCellDef="let element">{{ element.totalAmount }}</td>
       </ng-container>
 
-      <!-- Actions -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let element; let i = index">
           <button mat-icon-button color="primary" (click)="editItem(i)">
             <mat-icon>edit</mat-icon>
@@ -113,30 +142,83 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-header-row *matHeaderRowDef="itemTableColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: itemTableColumns;"></tr>
     </table>
-  </div>
 
-  <!-- Totals Section -->
-  <div class="totals-section">
-    <div class="total-row">
-      <span>Total Quantity:</span>
-      <span>{{ getTotalQuantity() }}</span>
-    </div>
-    <div class="total-row">
-      <span>Total Discount:</span>
-      <span>{{ getTotalDiscount() | currency:'INR' }}</span>
-    </div>
-    <div class="total-row">
-      <span>Total Amount:</span>
-      <span>{{ getTotalAmount() | currency:'INR' }}</span>
-    </div>
-  </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 
-  <!-- Action Buttons -->
-  <div style="margin-top: 10px;">
-    <button mat-raised-button color="primary" (click)="saveBill()">Save Bill</button>
-    <button mat-raised-button color="accent" (click)="printInvoice()">Print Invoice</button>
-  </div>
+    <!-- ✅ Totals -->
+    <div class="totals-section">
+      <div class="total-row"><span>Total Quantity:</span><span class="total-value">{{ getTotalQuantity() }}</span></div>
+      <div class="total-row"><span>Total Discount:</span><span class="total-value">{{ getTotalDiscount() | number:'1.2-2' }}</span></div>
+      <div class="total-row grand-total"><span>Grand Total:</span><span class="total-value">{{ getTotalAmount() | number:'1.2-2' }}</span></div>
+    </div>
+  </mat-card>
+
+  <br />
+
+  <!-- 📚 List of Bills -->
+<mat-card *ngIf="savedBills.length > 0" class="mt-4">
+  <mat-accordion multi>
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>List of Bills</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <table mat-table [dataSource]="savedBills" class="full-width-table">
+
+          <ng-container matColumnDef="rowNumber">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let bill; let i = index">{{ i + 1 }}</td>
+          </ng-container>
+        <ng-container matColumnDef="billNumber">
+          <th mat-header-cell *matHeaderCellDef>Bill No</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.billNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerName">
+          <th mat-header-cell *matHeaderCellDef>Customer</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.customer.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="mobile">
+          <th mat-header-cell *matHeaderCellDef>Mobile</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.customer.mobile }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalQuantity">
+          <th mat-header-cell *matHeaderCellDef>Qty</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.totals.quantity }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalDiscount">
+          <th mat-header-cell *matHeaderCellDef>Discount</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.totals.discount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="grandTotal">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let bill">{{ bill.totals.amount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let bill; let i = index">
+            <button mat-icon-button color="primary" (click)="editBill(i)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteBill(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['rowNumber','billNumber','customerName','mobile','totalQuantity','totalDiscount','grandTotal','actions']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['rowNumber','billNumber','customerName','mobile','totalQuantity','totalDiscount','grandTotal','actions'];"></tr>
+      </table>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>
 
 </div>
