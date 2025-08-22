@@ -43,17 +43,13 @@ export const routes: Routes = [
         path: 'itemmaster',
         loadComponent: () =>
           import('./itemmaster/itemmaster').then(m => m.Itemmaster)
+      },
+      {
+        path: 'billbook',
+        loadComponent: () =>
+          import('./billbook/billbook').then(m => m.Billbook)
       }
-    //   {
-    //     path: 'batchnumber',
-    //     loadComponent: () =>
-    //       import('./batchnumber/batchnumber').then(m => m.Batchnumber)
-    //   },
-    //   {
-    //     path: 'company/list',
-    //     loadComponent: () =>
-    //       import('./company/company-list').then(m => m.CompanyList)
-    //   }
+    
     ]
   },
 

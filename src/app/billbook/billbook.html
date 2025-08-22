@@ -31,58 +31,119 @@
   <br />
 
   <!-- 🛒 Add Item Section -->
-  <mat-card>
-    <mat-accordion multi>
-      <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>Add Item</mat-panel-title>
-        </mat-expansion-panel-header>
+<mat-card>
+  <mat-accordion multi>
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Add Item</mat-panel-title>
+      </mat-expansion-panel-header>
 
-        <div class="item-form-grid">
-          <mat-form-field appearance="outline">
-            <mat-label>Item Name</mat-label>
-            <input matInput [(ngModel)]="itemForm.itemName" />
-          </mat-form-field>
+      <div class="item-form-grid">
+        <!-- Item Name with Autocomplete -->
+        <mat-form-field appearance="outline">
+          <mat-label>Item Name</mat-label>
+          <input
+            matInput
+            [formControl]="itemNameCtrl"
+            [matAutocomplete]="autoItem"
+          />
+          <mat-autocomplete
+            #autoItem="matAutocomplete"
+            (optionSelected)="onItemNameSelected($event.option.value)"
+          >
+            <mat-option
+              *ngFor="let option of filteredItemNames"
+              [value]="option"
+            >
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Batch Number</mat-label>
-            <input matInput [(ngModel)]="itemForm.batchNumber" />
-          </mat-form-field>
+        <!-- Batch Number with Autocomplete -->
+        <mat-form-field appearance="outline">
+          <mat-label>Batch Number</mat-label>
+          <input
+            matInput
+            [formControl]="batchNumberCtrl"
+            [matAutocomplete]="autoBatch"
+          />
+          <mat-autocomplete
+            #autoBatch="matAutocomplete"
+            (optionSelected)="onBatchNumberSelected($event.option.value)"
+          >
+            <mat-option
+              *ngFor="let option of filteredBatchNumbers"
+              [value]="option"
+            >
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Quantity</mat-label>
-            <input matInput type="number" [(ngModel)]="itemForm.quantity" (input)="calculateTotal()" />
-          </mat-form-field>
+        <!-- Quantity -->
+        <mat-form-field appearance="outline">
+          <mat-label>Quantity</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="itemForm.quantity"
+            (input)="calculateTotal()"
+          />
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Price</mat-label>
-            <input matInput type="number" [(ngModel)]="itemForm.perQuantityPrice" (input)="calculateTotal()" />
-          </mat-form-field>
+        <!-- Price -->
+        <mat-form-field appearance="outline">
+          <mat-label>Price</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="itemForm.perQuantityPrice"
+            (input)="calculateTotal()"
+          />
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Discount</mat-label>
-            <input matInput type="number" [(ngModel)]="itemForm.discount" (input)="calculateTotal()" />
-          </mat-form-field>
+        <!-- Discount -->
+        <mat-form-field appearance="outline">
+          <mat-label>Discount</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="itemForm.discount"
+            (input)="calculateTotal()"
+          />
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Total</mat-label>
-            <input matInput type="number" [(ngModel)]="itemForm.totalAmount" readonly />
-          </mat-form-field>
-        </div>
+        <!-- Total -->
+        <mat-form-field appearance="outline">
+          <mat-label>Total</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="itemForm.totalAmount"
+            readonly
+          />
+        </mat-form-field>
+      </div>
 
-        <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="addItem()">
-            {{ editIndex !== null ? 'Update Item' : 'Add Item' }}
-          </button>
-          <button mat-raised-button color="accent" (click)="saveBill()">Save Bill</button>
-          <button mat-raised-button color="warn" (click)="printInvoice()">Print Invoice</button>
-          <button mat-raised-button color="accent" (click)="sendWhatsApp()">
-            <mat-icon>send</mat-icon> Send via WhatsApp
-          </button>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </mat-card>
+      <!-- Buttons -->
+      <div class="form-actions">
+        <button mat-raised-button color="primary" (click)="addItem()">
+          {{ editIndex !== null ? "Update Item" : "Add Item" }}
+        </button>
+        <button mat-raised-button color="accent" (click)="saveBill()">
+          Save Bill
+        </button>
+        <button mat-raised-button color="warn" (click)="printInvoice()">
+          Print Invoice
+        </button>
+        <button mat-raised-button color="accent" (click)="sendWhatsApp()">
+          <mat-icon>send</mat-icon> Send via WhatsApp
+        </button>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>
 
   <br />
 
@@ -140,7 +201,6 @@
           </button>
         </td>
       </ng-container>
-
   <tr mat-header-row *matHeaderRowDef="itemTableColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: itemTableColumns;"></tr>
     </table>

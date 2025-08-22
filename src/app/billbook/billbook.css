@@ -1,0 +1,59 @@
+.item-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+}
+
+.table-container {
+  margin-top: 10px;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+.totals-section {
+  margin-top: 20px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.totals-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* pushes totals to right */
+  gap: 4px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  width: 250px; /* adjust width as needed */
+  font-size: 14px;
+}
+
+.total-row span:first-child {
+  font-weight: 500;
+}
+
+.total-value {
+  text-align: right;
+  min-width: 100px;
+}
+
+.grand-total {
+  font-weight: bold;
+  border-top: 2px solid #ccc;
+  margin-top: 5px;
+  padding-top: 5px;
+}
