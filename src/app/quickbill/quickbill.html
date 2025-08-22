@@ -76,6 +76,9 @@
           </button>
           <button mat-raised-button color="accent" (click)="saveBill()">Save Bill</button>
           <button mat-raised-button color="warn" (click)="printInvoice()">Print Invoice</button>
+           <button mat-raised-button (click)="printPDF('A4')">Print A4</button>
+  <button mat-raised-button (click)="printPDF('A5')">Print A5</button>
+  <button mat-raised-button (click)="printPDF('LETTER')">Print Letter</button>
           <button mat-raised-button color="accent" (click)="sendWhatsApp()">
             <mat-icon>send</mat-icon> Send via WhatsApp
           </button>
@@ -209,6 +212,9 @@
             </button>
             <button mat-icon-button color="warn" (click)="deleteBill(i)">
               <mat-icon>delete</mat-icon>
+            </button>
+              <button mat-icon-button color="warn" (click)="printPDF('POS80')">
+              <mat-icon>print</mat-icon>
             </button>
           </td>
         </ng-container>

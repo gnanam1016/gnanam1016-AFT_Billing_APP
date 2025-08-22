@@ -15,6 +15,10 @@ import { BillingService } from '../indexeddb/bill-storage';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirmdialog-component/confirmdialog-component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+(pdfMake as any).vfs = pdfFonts.pdfMake ? pdfFonts.pdfMake.vfs : pdfFonts.vfs;
 
 export interface BillItem {
   itemName: string;
@@ -42,7 +46,7 @@ export interface Bill {
   customer: Customer;
   items: BillItem[];
   totals: BillTotals;
-  date ?: any; // optional date field
+  date?: any; // optional date field
   id?: number; // optional ID for IndexedDB
 }
 
@@ -62,24 +66,24 @@ export interface Bill {
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatCardModule,MatSnackBarModule
+    MatCardModule, MatSnackBarModule
   ],
 })
-export class Quickbill implements AfterViewInit,OnInit {
-  constructor(private billingService: BillingService,  private dialog: MatDialog,
-  private snackBar: MatSnackBar) {}
+export class Quickbill implements AfterViewInit, OnInit {
+  constructor(private billingService: BillingService, private dialog: MatDialog,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     //  this.billingService.getBills();
-   this.refreshBills();  
-  if (this.savedBills.length > 0) {
-    // Extract last bill number and set counter
-    const lastBill = this.savedBills[this.savedBills.length - 1];
-    const lastNumber = parseInt(lastBill.billNumber.replace('BILL-', ''), 10);
-    this.billCounter = lastNumber + 1;
-  } else {
-    this.billCounter = 1;
-  }
+    this.refreshBills();
+    if (this.savedBills.length > 0) {
+      // Extract last bill number and set counter
+      const lastBill = this.savedBills[this.savedBills.length - 1];
+      const lastNumber = parseInt(lastBill.billNumber.replace('BILL-', ''), 10);
+      this.billCounter = lastNumber + 1;
+    } else {
+      this.billCounter = 1;
+    }
   }
   // Table columns
   displayedColumns: string[] = ['itemName', 'batchNumber', 'quantity', 'perQuantityPrice', 'discount', 'totalAmount', 'actions'];
@@ -178,91 +182,91 @@ export class Quickbill implements AfterViewInit,OnInit {
   // -----------------------------
   // Save / Edit Bills
   // -----------------------------
-async saveBill() {
-  let billNumber = '';
+  async saveBill() {
+    let billNumber = '';
 
-  if (this.editBillIndex !== null) {
-    billNumber = this.savedBills[this.editBillIndex].billNumber;
-  } else {
-    billNumber = await this.billingService.getNextBillNumber();
-  }
-
-  const billData: Bill = {
-    billNumber,
-    customer: { ...this.customerForm },
-    items: this.dataSource.data.map((it: BillItem) => ({ ...it })),
-    totals: {
-      quantity: this.getTotalQuantity(),
-      discount: this.getTotalDiscount(),
-      amount: this.getTotalAmount()
+    if (this.editBillIndex !== null) {
+      billNumber = this.savedBills[this.editBillIndex].billNumber;
+    } else {
+      billNumber = await this.billingService.getNextBillNumber();
     }
-  };
 
-  if (this.editBillIndex !== null) {
-    // ✅ Keep ID when updating
-    const existingBill = {
-      ...this.savedBills[this.editBillIndex],
-      ...billData,
-      id: (this.savedBills[this.editBillIndex] as any).id
+    const billData: Bill = {
+      billNumber,
+      customer: { ...this.customerForm },
+      items: this.dataSource.data.map((it: BillItem) => ({ ...it })),
+      totals: {
+        quantity: this.getTotalQuantity(),
+        discount: this.getTotalDiscount(),
+        amount: this.getTotalAmount()
+      }
     };
-    await this.billingService.updateBill(existingBill);
-  } else {
-    // ✅ Save new bill and attach ID
-    const id = await this.billingService.addBill(billData);
-    (billData as any).id = id;
+
+    if (this.editBillIndex !== null) {
+      // ✅ Keep ID when updating
+      const existingBill = {
+        ...this.savedBills[this.editBillIndex],
+        ...billData,
+        id: (this.savedBills[this.editBillIndex] as any).id
+      };
+      await this.billingService.updateBill(existingBill);
+    } else {
+      // ✅ Save new bill and attach ID
+      const id = await this.billingService.addBill(billData);
+      (billData as any).id = id;
+    }
+
+    // ✅ Refresh from DB so UI updates properly
+    await this.refreshBills();
+
+    alert('Bill saved successfully! Bill Number: ' + billNumber);
+
+    // Reset
+    this.customerForm = { name: '', mobile: '', address: '' };
+    this.dataSource.data = [];
+    this.editBillIndex = null;
   }
 
-  // ✅ Refresh from DB so UI updates properly
-  await this.refreshBills();
-
-  alert('Bill saved successfully! Bill Number: ' + billNumber);
-
-  // Reset
-  this.customerForm = { name: '', mobile: '', address: '' };
-  this.dataSource.data = [];
-  this.editBillIndex = null;
-}
-
-private async refreshBills() {
-  this.savedBills = await this.billingService.getBills();
-}
+  private async refreshBills() {
+    this.savedBills = await this.billingService.getBills();
+  }
 
   editBill(index: number) {
-  const bill = this.savedBills[index];
-  this.customerForm = { ...bill.customer };
-  this.dataSource.data = bill.items.map(it => ({ ...it }));
-  this.editBillIndex = index; // remember which index in UI we’re editing
-}
+    const bill = this.savedBills[index];
+    this.customerForm = { ...bill.customer };
+    this.dataSource.data = bill.items.map(it => ({ ...it }));
+    this.editBillIndex = index; // remember which index in UI we’re editing
+  }
 
 
-async deleteBill(index: number) {
-  const bill = this.savedBills[index];
+  async deleteBill(index: number) {
+    const bill = this.savedBills[index];
 
-  // ✅ Open confirmation dialog
-  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    width: '350px',
-    data: {
-      title: 'Confirm Delete',
-      message: `Are you sure you want to delete Bill <b>${bill.billNumber}</b>?`
-    }
-  });
-
-  dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
-    if (confirmed) {
-      if ((bill as any).id) {
-        await this.billingService.deleteBill((bill as any).id);
+    // ✅ Open confirmation dialog
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: `Are you sure you want to delete Bill <b>${bill.billNumber}</b>?`
       }
+    });
 
-      this.savedBills.splice(index, 1);
+    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (confirmed) {
+        if ((bill as any).id) {
+          await this.billingService.deleteBill((bill as any).id);
+        }
 
-      // ✅ Show Material snackbar instead of alert
-      this.snackBar.open(`Bill ${bill.billNumber} deleted successfully`, 'Close', {
-        duration: 3000,
-        panelClass: ['snackbar-success']
-      });
-    }
-  });
-}
+        this.savedBills.splice(index, 1);
+
+        // ✅ Show Material snackbar instead of alert
+        this.snackBar.open(`Bill ${bill.billNumber} deleted successfully`, 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+      }
+    });
+  }
 
   // -----------------------------
   // Printing / WhatsApp
@@ -396,13 +400,108 @@ async deleteBill(index: number) {
 
     window.open(whatsappUrl, '_blank');
   }
-  
+
   private loadBillsFromStorage(): void {
-  const data = localStorage.getItem('savedBills');
-  this.savedBills = data ? JSON.parse(data) : [];
+    const data = localStorage.getItem('savedBills');
+    this.savedBills = data ? JSON.parse(data) : [];
+  }
+
+  private saveBillsToStorage(): void {
+    localStorage.setItem('savedBills', JSON.stringify(this.savedBills));
+  }
+
+   // 🔹 Print function
+  // 🔹 Print function
+printPDF(format: 'A4' | 'A5' | 'LETTER' | 'POS80' | 'POS58') {
+  const bill = this.savedBills[0];
+
+  // Map custom sizes
+  const pageSizeMap: any = {
+    A4: 'A4',
+    A5: 'A5',
+    LETTER: 'LETTER',
+    POS80: { width: 226.77, height: 'auto' }, // ~80mm
+    POS58: { width: 165.35, height: 'auto' }  // ~58mm
+  };
+
+  const docDefinition: any = {
+    pageSize: pageSizeMap[format],
+    pageMargins: format.startsWith('POS') ? [10, 10, 10, 10] : [40, 60, 40, 60],
+    content: [
+      { text: 'INVOICE', style: 'header' },
+      { text: `Bill No: ${bill.billNumber}`, style: 'subHeader' },
+      { text: `Date: ${bill.date || new Date().toLocaleDateString()}`, margin: [0, 0, 0, 10] },
+
+      // Customer
+      {
+        style: 'customerInfo',
+        table: {
+          widths: ['auto', '*'],
+          body: [
+            ['Customer Name:', bill.customer.name],
+            ['Mobile:', bill.customer.mobile],
+            ['Address:', bill.customer.address || '']
+          ]
+        },
+        layout: 'noBorders',
+        margin: [0, 0, 0, 20]
+      },
+
+      // Items Table
+      {
+        style: 'itemsTable',
+        table: {
+          headerRows: 1,
+          widths: format.startsWith('POS')
+            ? ['*', 'auto', 'auto']  // POS = narrower
+            : ['*', '*', 'auto', 'auto', 'auto', 'auto'],
+          body: format.startsWith('POS')
+            ? [
+                ['Item', 'Qty', 'Total'],
+                ...bill.items.map((item: BillItem) => [
+                  item.itemName,
+                  item.quantity,
+                  item.totalAmount
+                ])
+              ]
+            : [
+                ['Item', 'Batch', 'Qty', 'Price', 'Discount', 'Total'],
+                ...bill.items.map((item: BillItem) => [
+                  item.itemName,
+                  item.batchNumber,
+                  item.quantity,
+                  item.perQuantityPrice,
+                  item.discount,
+                  item.totalAmount
+                ])
+              ]
+        }
+      },
+
+      // Totals
+      {
+        style: 'totals',
+        table: {
+          widths: ['*', 'auto'],
+          body: [
+            ['Total Quantity', bill.totals.quantity],
+            ['Total Discount', bill.totals.discount.toFixed(2)],
+            ['Grand Total', bill.totals.amount.toFixed(2)]
+          ]
+        },
+        margin: [0, 20, 0, 0]
+      }
+    ],
+    styles: {
+      header: { fontSize: format.startsWith('POS') ? 12 : 18, bold: true, alignment: 'center', margin: [0, 0, 0, 10] },
+      subHeader: { fontSize: format.startsWith('POS') ? 8 : 12, bold: true, margin: [0, 0, 0, 5] },
+      customerInfo: { margin: [0, 5, 0, 5] },
+      itemsTable: { margin: [0, 5, 0, 5] },
+      totals: { bold: true }
+    }
+  };
+
+  pdfMake.createPdf(docDefinition).open();
 }
 
-private saveBillsToStorage(): void {
-  localStorage.setItem('savedBills', JSON.stringify(this.savedBills));
-}
 }
