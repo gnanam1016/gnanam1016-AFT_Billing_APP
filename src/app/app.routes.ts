@@ -48,8 +48,12 @@ export const routes: Routes = [
         path: 'billbook',
         loadComponent: () =>
           import('./billbook/billbook').then(m => m.Billbook)
+      },
+      {
+        path: 'newuser',
+        loadComponent: () =>
+          import('./newuser/newuser').then(m => m.NewUser)
       }
-    
     ]
   },
 

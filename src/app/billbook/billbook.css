@@ -7,14 +7,68 @@
 .form-actions {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+@media (max-width: 600px) {
+  .item-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .table-container {
+    padding-bottom: 8px;
+    overflow-x: auto;
+  }
+  .full-width-table {
+    min-width: 320px;
+    font-size: 12px;
+    width: 100%;
+    border-spacing: 0;
+  }
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .form-actions button {
+    width: 100%;
+    min-height: 40px;
+    font-size: 15px;
+    margin: 0;
+  }
+  .total-row {
+    width: 100%;
+    font-size: 12px;
+  }
+  mat-form-field {
+    width: 100%;
+  }
 }
 
 .table-container {
   margin-top: 10px;
+  overflow-x: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .full-width-table {
   width: 100%;
+  min-width: 600px;
+}
+@media (max-width: 600px) {
+  .item-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .table-container {
+    padding-bottom: 8px;
+  }
+  .full-width-table {
+    min-width: 400px;
+    font-size: 13px;
+  }
+  .total-row {
+    width: 100%;
+    font-size: 13px;
+  }
 }
 
 .totals-section {

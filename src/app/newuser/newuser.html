@@ -1,0 +1,111 @@
+<mat-card class="new-user-card form-card">
+  <!-- User Form -->
+  <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)" class="form-container">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput name="name" [(ngModel)]="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Date of Birth</mat-label>
+      <input matInput [matDatepicker]="picker" name="dob" [(ngModel)]="dob" required />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Aadhar Number</mat-label>
+      <input matInput name="aadhar" [(ngModel)]="aadhar" required minlength="12" maxlength="12" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput name="phone" [(ngModel)]="phone" required minlength="10" maxlength="10" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" name="password" [(ngModel)]="password" required />
+    </mat-form-field>
+
+    <mat-checkbox name="active" [(ngModel)]="active">Active</mat-checkbox>
+
+    <div class="button-row">
+      <button mat-raised-button color="primary" type="submit">
+        <mat-icon>{{ editIndex !== null ? 'edit' : 'person_add' }}</mat-icon>
+        {{ editIndex !== null ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </form>
+</mat-card>
+
+<mat-card class="new-user-card table-card">
+  <mat-accordion *ngIf="dataSource.data.length > 0">
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Saved Users</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Search Users</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter..." />
+      </mat-form-field>
+
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 white-table">
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+          </ng-container>
+
+          <!-- DOB Column -->
+          <ng-container matColumnDef="dob">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>DOB</th>
+            <td mat-cell *matCellDef="let user">{{ user.dob | date }}</td>
+          </ng-container>
+
+          <!-- Aadhar Column -->
+          <ng-container matColumnDef="aadhar">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Aadhar</th>
+            <td mat-cell *matCellDef="let user">{{ user.aadhar }}</td>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+            <td mat-cell *matCellDef="let user">{{ user.phone }}</td>
+          </ng-container>
+
+          <!-- Active Column -->
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>Active</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-icon color="primary">{{ user.active ? 'check_circle' : 'cancel' }}</mat-icon>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let user; let i = index" class="action-cell">
+              <button mat-icon-button color="accent" (click)="onEdit(user, i)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onDelete(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <!-- Paginator -->
+      <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>
